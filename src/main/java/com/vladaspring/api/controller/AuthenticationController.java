@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vladaspring.api.hibernate.entities.User;
+import com.vladaspring.api.model.request.LoginRequest;
 import com.vladaspring.api.model.request.NewAccReq;
 import com.vladaspring.api.service.IdentityService;
 
@@ -21,9 +22,9 @@ public class AuthenticationController {
 	@Autowired
 	private IdentityService identityService;
 	
-    @GetMapping(path = "/login")
-    public String login(){
-        return "Loaded";
+    @PostMapping(path = "/login")
+    public String login(@Valid @RequestBody LoginRequest request){
+        return null;
     }
     
     @PostMapping(path = "/account")

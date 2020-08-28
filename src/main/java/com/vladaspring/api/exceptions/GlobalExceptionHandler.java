@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +73,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(response, status);
 	}
 	
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
+		
+		ErrorResponse errorResponse = new ErrorResponse();
+		errorResponse.setTimestamp(new Date());
+		errorResponse.setLocation(request.getDescription(false));
+		errorResponse.setStatusCode(status.value());
+		errorResponse.setError(status.getReasonPhrase());
+		errorResponse.setErrorDetails(List.of("Requests body is missing"));
+		
+		return new ResponseEntity<>(errorResponse, status);
+	}
+	
 	@ExceptionHandler(BusinessException.class)
 	protected ResponseEntity<Object> handleExceptionInternal(BusinessException ex) {
 		ErrorResponse response = new ErrorResponse();
@@ -94,18 +109,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 	
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	protected ResponseEntity<Object> handleExceptionInternal(DataIntegrityViolationException ex) {
+		ErrorResponse response = new ErrorResponse();
+		response.setTimestamp(new Date());
+		response.setStatusCode(HttpStatus.CONFLICT.value());
+		response.setErrorDetails(List.of("Trenutno ne mogu nesto da obradim...vraticu se!!! dupli"));
+		response.setError(ex.getMessage());
+		////////////////////////////////////////////////////////
 		
-		ErrorResponse errorResponse = new ErrorResponse();
-		errorResponse.setTimestamp(new Date());
-		errorResponse.setLocation(request.getDescription(false));
-		errorResponse.setStatusCode(status.value());
-		errorResponse.setError(status.getReasonPhrase());
-		errorResponse.setErrorDetails(List.of("Requests body is missing"));
-		
-		return new ResponseEntity<>(errorResponse, status);
+		return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 	}
+	
+	
 	
 
 }
