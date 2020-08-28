@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.validation.ConstraintViolationException;
 
-import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

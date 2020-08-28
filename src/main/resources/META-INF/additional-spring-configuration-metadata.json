@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "token.duration.millis",
+    "type": "java.lang.String",
+    "description": "A description for 'token.duration.millis'"
+  },
+  {
+    "name": "token.signature.key",
+    "type": "java.lang.String",
+    "description": "A description for 'token.signature.key'"
+  }
+]}
